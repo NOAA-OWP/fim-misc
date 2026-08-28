@@ -1,0 +1,9 @@
+services:
+  worker-dev:
+    build: .
+    entrypoint: [ sleep, infinity ]
+    volumes:
+      - ./src/extent_worker_script.py:/dev/extent_worker_script.py
+      - ./config/worker_config.yaml:/dev/worker_config.yaml
+    env_file:
+      - .env

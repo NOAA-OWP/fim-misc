@@ -1,0 +1,233 @@
+{
+	"info": {
+		"_postman_id": "9d27195f-78d3-4e4f-994b-e3f264503dda",
+		"name": "Nomad",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "36773789"
+	},
+	"item": [
+		{
+			"name": "List Jobs",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "{{uri}}/v1/jobs?prefix=<>",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"v1",
+						"jobs"
+					],
+					"query": [
+						{
+							"key": "prefix",
+							"value": "<>"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Parse Job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "{{nomadUrl}}/v1/jobs/parse",
+					"host": [
+						"{{nomadUrl}}"
+					],
+					"path": [
+						"v1",
+						"jobs",
+						"parse"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Parse Job",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"JobHCL\": \"job \\\"create-extent-library\\\" {\\n  datacenters = [\\\"dc1\\\"]\\n  type        = \\\"batch\\\"\\n\\n  constraint {\\n    attribute = \\\"${node.class}\\\"\\n    value     = \\\"linux\\\"\\n  }\\n\\n  parameterized {\\n    meta_required = [\\n      \\\"src_library_path\\\",\\n      \\\"dst_library_path\\\",\\n      \\\"submodels_path\\\",\\n      \\\"glcr_token\\\"\\n    ]\\n\\n  }\\n\\n  group \\\"create-extent-library-group\\\" {\\n    restart {\\n      attempts = 0\\n      mode     = \\\"fail\\\"\\n    }\\n\\n    task \\\"processor\\\" {\\n      driver = \\\"docker\\\"\\n\\n      config {\\n        image = \\\"registry.sh.nextgenwaterprediction.com/ngwpc/fim-c/flows2fim_extents:extent-library\\\"\\n        force_pull = true\\n\\n        auth {\\n          username = \\\"ReadOnly_NGWPC_Group_Deploy_Token\\\"\\n          password = \\\"${NOMAD_META_glcr_token}\\\"\\n        }\\n\\n        args = [\\n          \\\"-src\\\", \\\"${NOMAD_META_src_library_path}\\\",\\n          \\\"-dst\\\", \\\"${NOMAD_META_dst_library_path}\\\",\\n          \\\"-m\\\", \\\"${NOMAD_META_submodels_path}\\\",\\n          \\\"-pp\\\"\\n\\n        ]\\n\\n        logging {\\n          type = \\\"awslogs\\\"\\n          config {\\n            awslogs-group        = \\\"/aws/ec2/nomad-client-linux-test\\\"\\n            awslogs-region       = \\\"us-east-1\\\"\\n            awslogs-stream       = \\\"${NOMAD_JOB_ID}\\\"\\n            awslogs-create-group = \\\"true\\\"\\n          }\\n        }\\n      }\\n\\n      resources {\\n        memory = 14000\\n      }\\n\\n      logs {\\n        max_files     = 5\\n        max_file_size = 10 # MB\\n      }\\n    }\\n  }\\n}\",\n  \"Canonicalize\": true\n}\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{uri}}/v1/jobs/parse",
+							"host": [
+								"{{uri}}"
+							],
+							"path": [
+								"v1",
+								"jobs",
+								"parse"
+							]
+						}
+					},
+					"_postman_previewlanguage": "json",
+					"header": [
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": "",
+							"type": "text"
+						}
+					],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\n    \"Affinities\": null,\n    \"AllAtOnce\": false,\n    \"Constraints\": [\n        {\n            \"LTarget\": \"${node.class}\",\n            \"Operand\": \"=\",\n            \"RTarget\": \"linux\"\n        }\n    ],\n    \"ConsulNamespace\": \"\",\n    \"ConsulToken\": \"\",\n    \"CreateIndex\": 0,\n    \"Datacenters\": [\n        \"dc1\"\n    ],\n    \"DispatchIdempotencyToken\": null,\n    \"Dispatched\": false,\n    \"ID\": \"create-extent-library\",\n    \"JobModifyIndex\": 0,\n    \"Meta\": null,\n    \"Migrate\": null,\n    \"ModifyIndex\": 0,\n    \"Multiregion\": null,\n    \"Name\": \"create-extent-library\",\n    \"Namespace\": \"default\",\n    \"NodePool\": \"\",\n    \"NomadTokenID\": \"\",\n    \"ParameterizedJob\": {\n        \"MetaOptional\": null,\n        \"MetaRequired\": [\n            \"src_library_path\",\n            \"dst_library_path\",\n            \"submodels_path\",\n            \"glcr_token\"\n        ],\n        \"Payload\": \"\"\n    },\n    \"ParentID\": \"\",\n    \"Payload\": null,\n    \"Periodic\": null,\n    \"Priority\": 50,\n    \"Region\": \"global\",\n    \"Reschedule\": null,\n    \"Spreads\": null,\n    \"Stable\": false,\n    \"Status\": \"\",\n    \"StatusDescription\": \"\",\n    \"Stop\": false,\n    \"SubmitTime\": null,\n    \"TaskGroups\": [\n        {\n            \"Affinities\": null,\n            \"Constraints\": null,\n            \"Consul\": {\n                \"Cluster\": \"default\",\n                \"Namespace\": \"\",\n                \"Partition\": \"\"\n            },\n            \"Count\": 1,\n            \"Disconnect\": null,\n            \"EphemeralDisk\": {\n                \"Migrate\": false,\n                \"SizeMB\": 300,\n                \"Sticky\": false\n            },\n            \"MaxClientDisconnect\": null,\n            \"Meta\": null,\n            \"Migrate\": null,\n            \"Name\": \"create-extent-library-group\",\n            \"Networks\": null,\n            \"PreventRescheduleOnLost\": false,\n            \"ReschedulePolicy\": {\n                \"Attempts\": 1,\n                \"Delay\": 5000000000,\n                \"DelayFunction\": \"constant\",\n                \"Interval\": 86400000000000,\n                \"MaxDelay\": 0,\n                \"Unlimited\": false\n            },\n            \"RestartPolicy\": {\n                \"Attempts\": 0,\n                \"Delay\": 15000000000,\n                \"Interval\": 86400000000000,\n                \"Mode\": \"fail\",\n                \"RenderTemplates\": false\n            },\n            \"Scaling\": null,\n            \"Services\": null,\n            \"ShutdownDelay\": null,\n            \"Spreads\": null,\n            \"StopAfterClientDisconnect\": null,\n            \"Tasks\": [\n                {\n                    \"Actions\": null,\n                    \"Affinities\": null,\n                    \"Artifacts\": null,\n                    \"Config\": {\n                        \"force_pull\": true,\n                        \"args\": [\n                            \"-src\",\n                            \"${NOMAD_META_src_library_path}\",\n                            \"-dst\",\n                            \"${NOMAD_META_dst_library_path}\",\n                            \"-submodels\",\n                            \"${NOMAD_META_submodels_path}\",\n                            \"-pp\"\n                        ],\n                        \"auth\": [\n                            {\n                                \"username\": \"ReadOnly_NGWPC_Group_Deploy_Token\",\n                                \"password\": \"${NOMAD_META_glcr_token}\"\n                            }\n                        ],\n                        \"logging\": [\n                            {\n                                \"config\": [\n                                    {\n                                        \"awslogs-create-group\": \"true\",\n                                        \"awslogs-group\": \"/aws/ec2/nomad-client-linux-test\",\n                                        \"awslogs-region\": \"us-east-1\",\n                                        \"awslogs-stream\": \"${NOMAD_JOB_ID}\"\n                                    }\n                                ],\n                                \"type\": \"awslogs\"\n                            }\n                        ],\n                        \"image\": \"registry.sh.nextgenwaterprediction.com/ngwpc/fim-c/flows2fim_extents:extent-library\"\n                    },\n                    \"Constraints\": null,\n                    \"Consul\": null,\n                    \"DispatchPayload\": null,\n                    \"Driver\": \"docker\",\n                    \"Env\": null,\n                    \"Identities\": null,\n                    \"Identity\": null,\n                    \"KillSignal\": \"\",\n                    \"KillTimeout\": 5000000000,\n                    \"Kind\": \"\",\n                    \"Leader\": false,\n                    \"Lifecycle\": null,\n                    \"LogConfig\": {\n                        \"Disabled\": false,\n                        \"Enabled\": null,\n                        \"MaxFileSizeMB\": 10,\n                        \"MaxFiles\": 5\n                    },\n                    \"Meta\": null,\n                    \"Name\": \"processor\",\n                    \"Resources\": {\n                        \"CPU\": 100,\n                        \"Cores\": 0,\n                        \"Devices\": null,\n                        \"DiskMB\": null,\n                        \"IOPS\": null,\n                        \"MemoryMB\": 14000,\n                        \"MemoryMaxMB\": null,\n                        \"NUMA\": null,\n                        \"Networks\": null,\n                        \"SecretsMB\": null\n                    },\n                    \"RestartPolicy\": {\n                        \"Attempts\": 0,\n                        \"Delay\": 15000000000,\n                        \"Interval\": 86400000000000,\n                        \"Mode\": \"fail\",\n                        \"RenderTemplates\": false\n                    },\n                    \"ScalingPolicies\": null,\n                    \"Schedule\": null,\n                    \"Services\": null,\n                    \"ShutdownDelay\": 0,\n                    \"Templates\": null,\n                    \"User\": \"\",\n                    \"Vault\": null,\n                    \"VolumeMounts\": null\n                }\n            ],\n            \"Update\": null,\n            \"Volumes\": null\n        }\n    ],\n    \"Type\": \"batch\",\n    \"UI\": null,\n    \"Update\": null,\n    \"VaultNamespace\": \"\",\n    \"VaultToken\": \"\",\n    \"Version\": 0,\n    \"VersionTag\": null\n}"
+				}
+			]
+		},
+		{
+			"name": "Register Job",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{uri}}/v1/jobs",
+					"host": [
+						"{{uri}}"
+					],
+					"path": [
+						"v1",
+						"jobs"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Register Job",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "X-Nomad-Token",
+								"value": "{{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Job\": {\n    \"Affinities\": null,\n    \"AllAtOnce\": false,\n    \"Constraints\": [\n        {\n            \"LTarget\": \"${node.class}\",\n            \"Operand\": \"=\",\n            \"RTarget\": \"linux\"\n        }\n    ],\n    \"ConsulNamespace\": \"\",\n    \"ConsulToken\": \"\",\n    \"CreateIndex\": 0,\n    \"Datacenters\": [\n        \"dc1\"\n    ],\n    \"DispatchIdempotencyToken\": null,\n    \"Dispatched\": false,\n    \"ID\": \"create-extent-library\",\n    \"JobModifyIndex\": 0,\n    \"Meta\": null,\n    \"Migrate\": null,\n    \"ModifyIndex\": 0,\n    \"Multiregion\": null,\n    \"Name\": \"create-extent-library\",\n    \"Namespace\": \"default\",\n    \"NodePool\": \"\",\n    \"NomadTokenID\": \"\",\n    \"ParameterizedJob\": {\n        \"MetaOptional\": null,\n        \"MetaRequired\": [\n            \"src_library_path\",\n            \"dst_library_path\",\n            \"submodels_path\",\n            \"glcr_token\"\n        ],\n        \"Payload\": \"\"\n    },\n    \"ParentID\": \"\",\n    \"Payload\": null,\n    \"Periodic\": null,\n    \"Priority\": 50,\n    \"Region\": \"global\",\n    \"Reschedule\": null,\n    \"Spreads\": null,\n    \"Stable\": false,\n    \"Status\": \"\",\n    \"StatusDescription\": \"\",\n    \"Stop\": false,\n    \"SubmitTime\": null,\n    \"TaskGroups\": [\n        {\n            \"Affinities\": null,\n            \"Constraints\": null,\n            \"Consul\": {\n                \"Cluster\": \"default\",\n                \"Namespace\": \"\",\n                \"Partition\": \"\"\n            },\n            \"Count\": 1,\n            \"Disconnect\": null,\n            \"EphemeralDisk\": {\n                \"Migrate\": false,\n                \"SizeMB\": 300,\n                \"Sticky\": false\n            },\n            \"MaxClientDisconnect\": null,\n            \"Meta\": null,\n            \"Migrate\": null,\n            \"Name\": \"create-extent-library-group\",\n            \"Networks\": null,\n            \"PreventRescheduleOnLost\": false,\n            \"ReschedulePolicy\": {\n                \"Attempts\": 1,\n                \"Delay\": 5000000000,\n                \"DelayFunction\": \"constant\",\n                \"Interval\": 86400000000000,\n                \"MaxDelay\": 0,\n                \"Unlimited\": false\n            },\n            \"RestartPolicy\": {\n                \"Attempts\": 0,\n                \"Delay\": 15000000000,\n                \"Interval\": 86400000000000,\n                \"Mode\": \"fail\",\n                \"RenderTemplates\": false\n            },\n            \"Scaling\": null,\n            \"Services\": null,\n            \"ShutdownDelay\": null,\n            \"Spreads\": null,\n            \"StopAfterClientDisconnect\": null,\n            \"Tasks\": [\n                {\n                    \"Actions\": null,\n                    \"Affinities\": null,\n                    \"Artifacts\": null,\n                    \"Config\": {\n                        \"force_pull\": true,\n                        \"args\": [\n                            \"-src\",\n                            \"${NOMAD_META_src_library_path}\",\n                            \"-dst\",\n                            \"${NOMAD_META_dst_library_path}\",\n                            \"-m\",\n                            \"${NOMAD_META_submodels_path}\"                        ],\n                        \"auth\": [\n                            {\n                                \"username\": \"ReadOnly_NGWPC_Group_Deploy_Token\",\n                                \"password\": \"${NOMAD_META_glcr_token}\"\n                            }\n                        ],\n                        \"logging\": [\n                            {\n                                \"config\": [\n                                    {\n                                        \"awslogs-create-group\": \"true\",\n                                        \"awslogs-group\": \"/aws/ec2/nomad-client-linux-test\",\n                                        \"awslogs-region\": \"us-east-1\",\n                                        \"awslogs-stream\": \"${NOMAD_JOB_ID}\"\n                                    }\n                                ],\n                                \"type\": \"awslogs\"\n                            }\n                        ],\n                        \"image\": \"registry.sh.nextgenwaterprediction.com/ngwpc/fim-c/flows2fim_extents:extent-library\"\n                    },\n                    \"Constraints\": null,\n                    \"Consul\": null,\n                    \"DispatchPayload\": null,\n                    \"Driver\": \"docker\",\n                    \"Env\": null,\n                    \"Identities\": null,\n                    \"Identity\": null,\n                    \"KillSignal\": \"\",\n                    \"KillTimeout\": 5000000000,\n                    \"Kind\": \"\",\n                    \"Leader\": false,\n                    \"Lifecycle\": null,\n                    \"LogConfig\": {\n                        \"Disabled\": false,\n                        \"Enabled\": null,\n                        \"MaxFileSizeMB\": 10,\n                        \"MaxFiles\": 5\n                    },\n                    \"Meta\": null,\n                    \"Name\": \"processor\",\n                    \"Resources\": {\n                        \"CPU\": 100,\n                        \"Cores\": 0,\n                        \"Devices\": null,\n                        \"DiskMB\": null,\n                        \"IOPS\": null,\n                        \"MemoryMB\": 14000,\n                        \"MemoryMaxMB\": null,\n                        \"NUMA\": null,\n                        \"Networks\": null,\n                        \"SecretsMB\": null\n                    },\n                    \"RestartPolicy\": {\n                        \"Attempts\": 0,\n                        \"Delay\": 15000000000,\n                        \"Interval\": 86400000000000,\n                        \"Mode\": \"fail\",\n                        \"RenderTemplates\": false\n                    },\n                    \"ScalingPolicies\": null,\n                    \"Schedule\": null,\n                    \"Services\": null,\n                    \"ShutdownDelay\": 0,\n                    \"Templates\": null,\n                    \"User\": \"\",\n                    \"Vault\": null,\n                    \"VolumeMounts\": null\n                }\n            ],\n            \"Update\": null,\n            \"Volumes\": null\n        }\n    ],\n    \"Type\": \"batch\",\n    \"UI\": null,\n    \"Update\": null,\n    \"VaultNamespace\": \"\",\n    \"VaultToken\": \"\",\n    \"Version\": 0,\n    \"VersionTag\": null\n}\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{nomadUrl}}/v1/jobs",
+							"host": [
+								"{{nomadUrl}}"
+							],
+							"path": [
+								"v1",
+								"jobs"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "",
+					"header": [],
+					"cookie": [
+						{
+							"expires": "Invalid Date"
+						}
+					],
+					"body": "{\n    \"EvalID\": \"\",\n    \"EvalCreateIndex\": 0,\n    \"JobModifyIndex\": 1027505,\n    \"Warnings\": \"\",\n    \"Index\": 1027505,\n    \"LastContact\": 0,\n    \"KnownLeader\": false,\n    \"NextToken\": \"\"\n}"
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}
